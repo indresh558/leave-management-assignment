@@ -1,0 +1,59 @@
+http:
+
+  routers:
+
+    auth-router:
+      rule: "PathPrefix(`/auth`)"
+      service: auth-service
+      entryPoints:
+        - web
+      middlewares:
+        - auth-rate-limit 
+
+    employee-router:
+      rule: "PathPrefix(`/employees`)"
+      service: employee-service
+      entryPoints:
+        - web
+      middlewares:
+        - general-rate-limit
+
+    leave-router:
+      rule: "PathPrefix(`/leaves`)"
+      service: leave-service
+      entryPoints:
+        - web
+      middlewares:
+        - general-rate-limit
+
+  middlewares:
+
+    auth-rate-limit:
+      rateLimit:
+        average: 5
+        period: 60s
+        burst: 5
+
+    general-rate-limit:
+      rateLimit:
+        average: 30
+        period: 60s
+        burst: 10
+
+  services:
+
+    auth-service:
+      loadBalancer:
+        servers:
+          - url: "http://auth-service:8001"
+
+    employee-service:
+      loadBalancer:
+        servers:
+          - url: "http://employee-service:8002"
+
+    leave-service:
+      loadBalancer:
+        servers:
+          - url: "http://leave-service:8003"
+

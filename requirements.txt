@@ -1,0 +1,1 @@
+pip install fastapi uvicorn python-jose passlib bcrypt requests python-consul pydantic-settings httpx
