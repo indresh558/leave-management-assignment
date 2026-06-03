@@ -154,6 +154,7 @@ This will start:
 ```bash
 # Check all containers
 docker-compose ps
+```
 
 ### 4. Login and Get JWT Token
 ```bash
