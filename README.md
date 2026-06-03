@@ -155,13 +155,6 @@ This will start:
 # Check all containers
 docker-compose ps
 
-# Check service health
-curl http://localhost:8001/health
-curl http://localhost:8002/health
-curl http://localhost:8003/health
-curl http://localhost:8004/health
-```
-
 ### 4. Login and Get JWT Token
 ```bash
 curl -X POST http://localhost/auth/login \
@@ -244,14 +237,15 @@ NOTIFICATION_RETRY_DELAY=5
 
 **Employee Account:**
 - Username: `employee`
-- Password: `password123`
+- Password: `password`
 - Role: `EMPLOYEE`
 
 **Manager Account:**
 - Username: `manager`
-- Password: `password123`
+- Password: `password`
 - Role: `MANAGER`
 
+> There is other manager seed with username `manager2` and there are three employees `employee2`, `employee3`, `employee4` that reports to him. All the passwords are same.
 
 ### Default Leave Allocations
 
