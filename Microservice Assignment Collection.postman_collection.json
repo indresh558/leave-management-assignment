@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "4d1a8cd4-b7c4-40ae-bf5c-859501915545",
+    "name": "Microservice Assignment Collection",
+    "description": "## Microservice Assignment Collection\n\nThis collection covers the API endpoints for a microservice-based HR system that handles **employee management** and **leave management**. It is organized into three service groups:\n\n- **Auth** — Authentication endpoints for logging in as an employee or manager and obtaining JWT access tokens.\n- **Employee Service** — Endpoints for retrieving employee profile data, leave balances, team members, and manager information.\n- **Leave Service** — Endpoints for viewing leave history, applying for leave, and approving or rejecting leave requests.\n\n### Getting Started\n\n1. Set the `base_url` environment variable to your server's base URL (e.g., `http://localhost`).\n2. Use the **Employee Login** or **Manager Login** request in the **Auth** folder to obtain a JWT access token.\n3. Copy the `access_token` from the login response and set it as the `Authorization: Bearer <token>` header in subsequent requests (or store it in an environment variable for reuse).\n\n### Authentication\n\nAll endpoints (except login) require a valid JWT Bearer token in the `Authorization` header:\n\n```\nAuthorization: Bearer <your_access_token>\n```\n\nTokens are role-based — some endpoints are only accessible by employees, while others (such as approving/rejecting leave) are restricted to managers.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55393845",
+    "_collection_link": "https://go.postman.co/collection/55393845-4d1a8cd4-b7c4-40ae-bf5c-859501915545?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Employee Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"employee\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## POST /auth/login\n\n### Overview\n\nAuthenticates a user with their credentials and returns a session token or access token upon successful login. This endpoint is the entry point for all authenticated operations in the API.\n\n---\n\n### Request Details\n\n| Property | Value |\n| --- | --- |\n| **Method** | `POST` |\n| **URL** | `http://localhost/auth/login` |\n| **Content-Type** | `application/json` |\n\n---\n\n### Request Body Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `username` | string | ✅ Yes | The username of the account to authenticate. |\n| `password` | string | ✅ Yes | The password associated with the account. |\n\n---\n\n### Example Request Body\n\n``` json\n{\n  \"username\": \"employee\",\n  \"password\": \"password\"\n}\n\n ```\n\n---\n\n### Expected Responses\n\n#### ✅ Success — `200 OK`\n\nThe credentials are valid. The response will include an access token (e.g., JWT) to be used in subsequent authenticated requests.\n\n``` json\n{\n    \"access_token\": \"<token>\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 86400,\n    \"role\": \"USER_ROLE\"\n}\n\n ```\n\n#### ❌ Unauthorized — `401 Unauthorized`\n\nThe provided credentials are incorrect or the user does not exist.\n\n``` json\n{\n  \"message\": \"Invalid username or password\"\n}\n\n ```\n\n#### ❌ Bad Request — `400 Bad Request`\n\nOne or more required fields are missing or malformed in the request body.\n\n``` json\n{\n  \"message\": \"Username and password are required\"\n}\n\n ```\n\n---\n\n### Notes\n\n- Store the returned token securely and include it in the `Authorization` header (e.g., `Bearer` ) for all subsequent requests that require authentication.\n    \n- Passwords are transmitted over the network, so ensure this endpoint is always called over HTTPS in production environments."
+          },
+          "response": []
+        },
+        {
+          "name": "Manager Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"manager\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## POST /auth/login\n\n### Overview\n\nAuthenticates a user with their credentials and returns a session token or access token upon successful login. This endpoint is the entry point for all authenticated operations in the API.\n\n---\n\n### Request Details\n\n| Property | Value |\n| --- | --- |\n| **Method** | `POST` |\n| **URL** | `http://localhost/auth/login` |\n| **Content-Type** | `application/json` |\n\n---\n\n### Request Body Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `username` | string | ✅ Yes | The username of the account to authenticate. |\n| `password` | string | ✅ Yes | The password associated with the account. |\n\n---\n\n### Example Request Body\n\n``` json\n{\n  \"username\": \"employee\",\n  \"password\": \"password\"\n}\n\n ```\n\n---\n\n### Expected Responses\n\n#### ✅ Success — `200 OK`\n\nThe credentials are valid. The response will include an access token (e.g., JWT) to be used in subsequent authenticated requests.\n\n``` json\n{\n    \"access_token\": \"<token>\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 86400,\n    \"role\": \"USER_ROLE\"\n}\n\n ```\n\n#### ❌ Unauthorized — `401 Unauthorized`\n\nThe provided credentials are incorrect or the user does not exist.\n\n``` json\n{\n  \"message\": \"Invalid username or password\"\n}\n\n ```\n\n#### ❌ Bad Request — `400 Bad Request`\n\nOne or more required fields are missing or malformed in the request body.\n\n``` json\n{\n  \"message\": \"Username and password are required\"\n}\n\n ```\n\n---\n\n### Notes\n\n- Store the returned token securely and include it in the `Authorization` header (e.g., `Bearer` ) for all subsequent requests that require authentication.\n    \n- Passwords are transmitted over the network, so ensure this endpoint is always called over HTTPS in production environments."
+          },
+          "response": []
+        }
+      ],
+      "description": "Contains authentication endpoints for the HR microservice system. Use these endpoints to log in as an employee or manager and receive a JWT access token. The token returned must be included as a `Bearer` token in the `Authorization` header for all subsequent authenticated requests.\n\nTwo login requests are provided — one for employees and one for managers — each using different credentials but hitting the same `/auth/login` endpoint."
+    },
+    {
+      "name": "Employee Service",
+      "item": [
+        {
+          "name": "Employee Identity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZW1wbG95ZWUiLCJyb2xlIjoiRU1QTE9ZRUUiLCJleHAiOjE3ODAzOTcwMzksImlhdCI6MTc4MDMxMDYzOX0.9qrd3A-GlisXlRfwk-Uf3dc-HOwd91eQJHZ9-4siiWU"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees",
+                "me"
+              ]
+            },
+            "description": "## Employee Identity\n\nRetrieves the identity and profile information of the **currently authenticated employee**. This endpoint returns details about the logged-in user based on the provided JWT token.\n\n---\n\n### HTTP Method & URL\n\n```\nGET {{base_url}}/employees/me\n```\n\n---\n\n### Authentication\n\nThis endpoint requires a valid **Bearer JWT token** in the `Authorization` header.\n\n| Header          | Value                          |\n|-----------------|--------------------------------|\n| `Authorization` | `Bearer <your_jwt_token_here>` |\n\n---\n\n### Sample Successful Response\n\n**Status:** `200 OK`\n\n```json\n{\n  \"id\": 2,\n  \"role\": \"EMPLOYEE\",\n  \"username\": \"employee\",\n  \"manager_id\": 1,\n  \"full_name\": \"Employee User\"\n}\n```\n\n#### Response Fields\n\n| Field        | Type    | Description                                      |\n|--------------|---------|--------------------------------------------------|\n| `id`         | integer | The employee's unique identifier                 |\n| `role`       | string  | Role of the user (e.g., `EMPLOYEE`, `MANAGER`)   |\n| `username`   | string  | The login username of the employee               |\n| `manager_id` | integer | The unique ID of the employee's assigned manager |\n| `full_name`  | string  | The full display name of the employee            |\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Employee Leave Balance - ALL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZW1wbG95ZWUiLCJyb2xlIjoiRU1QTE9ZRUUiLCJleHAiOjE3ODAzOTcwMzksImlhdCI6MTc4MDMxMDYzOX0.9qrd3A-GlisXlRfwk-Uf3dc-HOwd91eQJHZ9-4siiWU"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees/leave-balances",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees",
+                "leave-balances"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Employee for Manager",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get Manager of Current Employee",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get Leave Balance by Type",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Deduct Leave Balance",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ],
+      "description": "Contains endpoints for the Employee Service microservice. These endpoints allow you to:\n\n- Retrieve the currently authenticated employee's profile (`/employees/me`)\n- Check the employee's available leave balances (`/employees/leave-balances`)\n- List all employees under a manager's supervision\n- Retrieve the manager assigned to the currently authenticated employee\n\nAll requests require a valid JWT Bearer token in the `Authorization` header."
+    },
+    {
+      "name": "Leave Service",
+      "item": [
+        {
+          "name": "Employee - Personal Leave History",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - View Leave with Filter",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Employee - Leave Apply",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Approve Leave",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Manager - Reject Leave",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ],
+      "description": "Contains endpoints for the Leave Service microservice. These endpoints cover the full leave management lifecycle:\n\n- View an employee's past leave history\n- View the team's leave schedule\n- Submit a new leave application\n- Approve a pending leave request (manager only)\n- Reject a pending leave request (manager only)\n\nLeave approval and rejection actions are restricted to users with the manager role. All requests require a valid JWT Bearer token in the `Authorization` header."
+    }
+  ]
+}
